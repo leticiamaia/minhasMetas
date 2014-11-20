@@ -7,7 +7,7 @@ GET     /                           controllers.Application.index
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
-GET     /goals                  controllers.Application.Goals()
-POST    /goals                  controllers.Application.newGoal()
-POST    /goals/:id/delete       controllers.Application.deleteGoal(id: Long)
+GET     /goals                  controllers.Application.goals()
+# POST    /goals                  controllers.Application.newGoal()
+#POST    /goals/:id/delete       controllers.Application.deleteGoal(id: Long)
 #GET     /books/addAutor        controllers.Application.addAutor(livro:Long, autor:String)
