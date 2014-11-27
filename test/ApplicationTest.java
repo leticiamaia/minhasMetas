@@ -1,4 +1,6 @@
 import java.util.*;
+
+import base.AbstractTest;
 import com.fasterxml.jackson.databind.JsonNode;
 import models.Goal;
 import models.dao.GenericDAO;
@@ -20,6 +22,7 @@ import scala.Option;
 
 import javax.persistence.EntityManager;
 
+import static java.util.Collection.*;
 import static play.test.Helpers.*;
 import static org.fest.assertions.Assertions.*;
 
@@ -30,8 +33,23 @@ import static org.fest.assertions.Assertions.*;
 * If you are interested in mocking a whole application, see the wiki for more details.
 *
 */
-public class ApplicationTest {
-    private GenericDAO dao = new GenericDAOImpl();
+public class ApplicationTest extends AbstractTest{
+
+    @Test
+    public void shouldOrderGoalsByWeekAndByRelevance() {
+        List<Goal> goals = new ArrayList<Goal>();
+        goals.add(new Goal("goal1", "description", 1, 1));
+        goals.add(new Goal("goal2", "description", 1, 2));
+        goals.add(new Goal("goal3", "description", 0, 1));
+        goals.add(new Goal("goal4", "description", 0, 3));
+        goals.add(new Goal("goal5", "description", 2, 1));
+        Collections.sort(goals);
+        assertThat(goals.get(0).getName()).isEqualTo("goal4");
+        assertThat(goals.get(1).getName()).isEqualTo("goal3");
+        assertThat(goals.get(2).getName()).isEqualTo("goal2");
+        assertThat(goals.get(3).getName()).isEqualTo("goal1");
+        assertThat(goals.get(4).getName()).isEqualTo("goal5");
+    }
 
     @Test
     public void simpleCheck() {
@@ -41,36 +59,37 @@ public class ApplicationTest {
 
     @Test
     public void shouldStartDatabaseWithNoGoals() {
-        dao = new GenericDAOImpl();
         List<Goal> goals = dao.findAllByClassName("Goal");
         assertThat(goals.size()).isEqualTo(0);
     }
 
     @Test
     public void shouldSaveGoalInDatabase() {
-        Goal goal = new Goal("Goal", new GregorianCalendar(1,1,2014), 1);
+        Goal goal = new Goal("Goal","Description",0, 1);
         dao.persist(goal);
         List<Goal> goals = dao.findAllByClassName(Goal.class.getName());
         assertThat(goals.size()).isEqualTo(1);
-        assertThat(goals.get(0).getName()).isEqualTo("GOAL");
+        assertThat(goals.get(0).getName()).isEqualTo("Goal");
     }
 
-    public EntityManager em;
-
-    @Before
-    public void setUp() {
-        FakeApplication app = Helpers.fakeApplication(new GlobalSettings());
-        Helpers.start(app);
-        Option<JPAPlugin> jpaPlugin = app.getWrappedApplication().plugin(JPAPlugin.class);
-        em = jpaPlugin.get().em("default");
-        JPA.bindForCurrentThread(em);
-        em.getTransaction().begin();
+    @Test
+    public void shouldRemoveGoalFromDatabase() {
+        Goal goal = new Goal("Goal","Description", 0, 1);
+        dao.persist(goal);
+        long id = goal.getId();
+        dao.removeById(Goal.class, id);
+        List<Goal> goals = dao.findAllByClassName(Goal.class.getName());
+        assertThat(goals.size()).isEqualTo(0);
     }
 
-    @After
-    public void tearDown() {
-        em.getTransaction().commit();
-        JPA.bindForCurrentThread(null);
-        em.close();
+    @Test
+    public void shouldChangeGoalStatusInDatabase() {
+        Goal goal = new Goal("Goal","Description", 0, 1);
+        dao.persist(goal);
+        goal.setAchieved(true);
+        dao.merge(goal);
+        List<Goal> goals = dao.findAllByClassName(Goal.class.getName());
+        assertThat(goals.size()).isEqualTo(1);
+        assertThat(goals.get(0).getAchieved()).isEqualTo(true);
     }
 }

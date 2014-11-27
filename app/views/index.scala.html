@@ -2,16 +2,16 @@
 
 <html lang="">
     <head>
-        <title>Hibernate Example</title>
+        <title>Minhas Metas</title>
         <meta charset="UTF-8">
         <meta name=description content="">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="author" content="">
               <!-- Bootstrap core CSS -->
-        <link href="assets/css/bootstrap.css" rel="stylesheet">
+        <link href="@routes.Assets.at("css/bootstrap.css")" rel="stylesheet">
             <!-- Custom styles for this template -->
-        <link href="assets/css/main.css" rel="stylesheet">
+        <link href="@routes.Assets.at("css/main.css")" rel="stylesheet">
     </head>
     <body>
         <div class="navbar navbar-inverse navbar-static-top navbar-xs">
@@ -23,23 +23,76 @@
         </div>
         <div class="row">
             <div class="col-sm-5 col-sm-offset-1">
-                <h2 class="text-center">@goals.size() Meta(s)</h2>
-                <div class="table-responsive">
+                <h2 class="text-center">Meta(s) Não Atingidas</h2>
+                <div class="table">
                     <table class="table table-hover">
                         <thead>
                             <tr>
                                 <th>Meta</th>
+                                <th>Descrição</th>
                                 <th>Data </th>
-                                <th>Descrição </th>
+                                <th>Prioridade</th>
+                                <th>  </th>
                             </tr>
                         </thead>
                         <tbody>
                         @for(goal <- goals) {
-                            <tr>
-                                <td>@goal.getName()</td>
-                                <td>@goal.getDescription</td>
-                            </tr>
+                            @if(!goal.getAchieved()) {
+                                <tr id=@goal.getId()>
+                                    <td>@goal.getName()</td>
+                                    <td>@goal.getDescription()</td>
+                                    <td>@goal.getDate()</td>
+                                    <td>@goal.getRelevance()</td>
+                                    <td>
+                                        <form method="post" action="@routes.Application.updateGoal(goal.getId())">
+                                            <button type="submit" id="move" class="btn btn-xs">
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                            </button>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <form method="post" action="@routes.Application.deleteGoal(goal.getId())">
+                                            <button class="btn btn-xs" id="remover">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
                         }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Meta</th>
+                                    <th>Descrição</th>
+                                    <th>Data </th>
+                                    <th>Prioridade</th>
+                                    <th>  </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                        <br> <h2 class="text-center">Meta(s) Atingidas</h2> <br>
+                            @for(goal <- goals) {
+                                @if(goal.getAchieved()) {
+                                <tr id=@goal.getId()>
+                                    <td>@goal.getName()</td>
+                                    <td>@goal.getDescription()</td>
+                                    <td>@goal.getDate()</td>
+                                    <td>@goal.getRelevance()</td>
+                                    <td>
+                                        <form method="post" action="@routes.Application.deleteGoal(goal.getId())">
+                                            <button class="btn btn-xs" id="remover">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                }
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -49,26 +102,28 @@
                     <div class="panel panel-default">
                         <div class="panel-heading"><h4 class="panel-title"><strong>Adiciona uma nova Meta</strong><h4></div>
                         <div class="panel-body">
-                            <form method="post">
-                                <label for="name"> Nome: </label>
-                                <input type="text" name="nome" id="inputName" class="form-control"required="required">
+                            <form method="post" action="/goals">
+                                <label for="goal"> Meta: </label>
+                                <input type="text" name="goal" id="inputName" class="form-control"required="required">
                                 <label for="description"> Descrição: </label>
                                 <input type="text" name="description" id="inputDescription" class="form-control"required="required">
-                                <label for="date"> Data: </label>
                                 <br>
-                                <input class="datepicker" name="date" data-date-format="mm/dd/yyyy">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Relevancia
-                                        <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu" role="menu">
-                                        <li>1</li>
-                                        <li>2</li>
-                                        <li>3</li>
-                                        <li>4</li>
-                                        <li>5</li>
-                                    </ul>
-                                </div>
+                                <label for="relevance"> Termino para daqui da Quantas semanas? </label>
+                                <select class="form-control" name="date">
+                                    <option>0</option>
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                    <option>6</option>
+                                </select>
+                                <label for="relevance"> Nível de Prioridade: </label>
+                                <select class="form-control" name="relevance">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                </select>
                                 <br><br>
                                 <input type="submit" class="btn btn-success" value="Create">
                             </form>
@@ -79,6 +134,8 @@
                 <!-- jQuery -->
         <script src="http://code.jquery.com/jquery.js"></script>
             <!-- Bootstrap JavaScript -->
-        <script src="assets/js/bootstrap.min.js"></script>
+        <script src="@routes.Assets.at("js/bootstrap.min.js")"></script>
+        <script src="@routes.Assets.at("js/script.js")"></script>
+        @*<script src="assets/js/script.js"></script>*@
     </body>
 </html>
