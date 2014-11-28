@@ -1,8 +1,6 @@
 package models;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 /**
  * Created by Leticia on 11/18/2014.
@@ -19,14 +17,14 @@ public class Goal implements Comparable{
     private String name;
     private String description;
     //1 to 3
-    private int relevance;
+    private int priority;
     private boolean achieved;
 
-    public Goal(String name,String description, int date, int relevance) {
+    public Goal(String name,String description, int date, int priority) {
         this.date = date;
         this.description = description;
         this.name = name;
-        this.relevance = relevance;
+        this.priority = priority;
         achieved = false;
     }
 
@@ -46,8 +44,8 @@ public class Goal implements Comparable{
         return description;
     }
 
-    public int getRelevance() {
-        return relevance;
+    public int getPriority() {
+        return priority;
     }
 
     public Long getId() {
@@ -66,9 +64,9 @@ public class Goal implements Comparable{
     public int compareTo(Object o) {
         Goal goal2 = (Goal)o;
         if(date == goal2.getDate()) {
-            if(relevance > goal2.getRelevance()) {
+            if(priority > goal2.getPriority()) {
                 return -1;
-            } else if (relevance < goal2.getRelevance()) {
+            } else if (priority < goal2.getPriority()) {
                 return 1;
             } else {
                 return 0;

@@ -17,7 +17,7 @@
         <div class="navbar navbar-inverse navbar-static-top navbar-xs">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="index.html">Minhas Metas</a>
+                    <a class="navbar-brand" href="index.html"> <span class="glyphicon glyphicon-heart"></span> Minhas Metas</a>
                 </div>
             </div>
         </div>
@@ -42,7 +42,7 @@
                                     <td>@goal.getName()</td>
                                     <td>@goal.getDescription()</td>
                                     <td>@goal.getDate()</td>
-                                    <td>@goal.getRelevance()</td>
+                                    <td>@goal.getPriority()</td>
                                     <td>
                                         <form method="post" action="@routes.Application.updateGoal(goal.getId())">
                                             <button type="submit" id="move" class="btn btn-xs">
@@ -82,11 +82,11 @@
                                     <td>@goal.getName()</td>
                                     <td>@goal.getDescription()</td>
                                     <td>@goal.getDate()</td>
-                                    <td>@goal.getRelevance()</td>
+                                    <td>@goal.getPriority()</td>
                                     <td>
                                         <form method="post" action="@routes.Application.deleteGoal(goal.getId())">
                                             <button class="btn btn-xs" id="remover">
-                                                <span class="glyphicon glyphicon-trash"></span>
+                                                <span class="glyphicon glyphicon-film"></span>
                                             </button>
                                         </form>
                                     </td>
