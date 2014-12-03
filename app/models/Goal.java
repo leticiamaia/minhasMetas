@@ -10,7 +10,6 @@ public class Goal implements Comparable{
     @Id
     @SequenceGenerator(name = "GOAL_SEQUENCE", sequenceName = "GOAL_SEQUENCE", allocationSize = 1, initialValue = 0)
     @GeneratedValue(strategy = GenerationType.TABLE)
-    // Usar Id sempre Long
     private Long id;
 
     private int date;

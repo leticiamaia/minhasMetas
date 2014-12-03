@@ -1,3 +1,5 @@
+package funcional;
+
 import java.util.*;
 
 import base.AbstractTest;
@@ -36,31 +38,15 @@ import static org.fest.assertions.Assertions.*;
 public class ApplicationTest extends AbstractTest{
 
     @Test
-    public void shouldOrderGoalsByWeekAndByRelevance() {
-        List<Goal> goals = new ArrayList<Goal>();
-        goals.add(new Goal("goal1", "description", 1, 1));
-        goals.add(new Goal("goal2", "description", 1, 2));
-        goals.add(new Goal("goal3", "description", 0, 1));
-        goals.add(new Goal("goal4", "description", 0, 3));
-        goals.add(new Goal("goal5", "description", 2, 1));
-        Collections.sort(goals);
-        assertThat(goals.get(0).getName()).isEqualTo("goal4");
-        assertThat(goals.get(1).getName()).isEqualTo("goal3");
-        assertThat(goals.get(2).getName()).isEqualTo("goal2");
-        assertThat(goals.get(3).getName()).isEqualTo("goal1");
-        assertThat(goals.get(4).getName()).isEqualTo("goal5");
-    }
-
-    @Test
     public void simpleCheck() {
         int a = 1 + 1;
         assertThat(a).isEqualTo(2);
     }
 
     @Test
-    public void shouldStartDatabaseWithNoGoals() {
+    public void shouldStartDatabaseWith10Goals() {
         List<Goal> goals = dao.findAllByClassName("Goal");
-        assertThat(goals.size()).isEqualTo(0);
+        assertThat(goals.size()).isEqualTo(10);
     }
 
     @Test
@@ -68,8 +54,9 @@ public class ApplicationTest extends AbstractTest{
         Goal goal = new Goal("Goal","Description",0, 1);
         dao.persist(goal);
         List<Goal> goals = dao.findAllByClassName(Goal.class.getName());
-        assertThat(goals.size()).isEqualTo(1);
-        assertThat(goals.get(0).getName()).isEqualTo("Goal");
+        assertThat(goals.size()).isEqualTo(11);
+        Goal goal2 = dao.findByEntityId(Goal.class, goal.getId());
+        assertThat(goal2.getName()).isEqualTo("Goal");
     }
 
     @Test
@@ -79,7 +66,7 @@ public class ApplicationTest extends AbstractTest{
         long id = goal.getId();
         dao.removeById(Goal.class, id);
         List<Goal> goals = dao.findAllByClassName(Goal.class.getName());
-        assertThat(goals.size()).isEqualTo(0);
+        assertThat(goals.size()).isEqualTo(10);
     }
 
     @Test
@@ -89,7 +76,8 @@ public class ApplicationTest extends AbstractTest{
         goal.setAchieved(true);
         dao.merge(goal);
         List<Goal> goals = dao.findAllByClassName(Goal.class.getName());
-        assertThat(goals.size()).isEqualTo(1);
-        assertThat(goals.get(0).getAchieved()).isEqualTo(true);
+        assertThat(goals.size()).isEqualTo(11);
+        Goal goal2 = dao.findByEntityId(Goal.class, goal.getId());
+        assertThat(goal2.getAchieved()).isEqualTo(true);
     }
 }
