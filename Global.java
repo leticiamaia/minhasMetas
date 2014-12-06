@@ -8,7 +8,7 @@ public class Global extends GlobalSettings {
     private static GenericDAO dao = new GenericDAOImpl();
 
     public void onStart(Application app) {
-        Logger.info("Aplicação inicializada...");
+        //Logger.info("Aplicação inicializada...");
         JPA.withTransaction(new play.libs.F.Callback0() {
             @Override
             public void invoke() throws Throwable {
@@ -48,6 +48,6 @@ public class Global extends GlobalSettings {
     }
 
     public void onStop(Application app) {
-        Logger.info("Aplicação desligada...");
+        //Logger.info("Aplicação desligada...");
     }
 }
